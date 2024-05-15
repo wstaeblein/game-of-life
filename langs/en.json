@@ -1,0 +1,15 @@
+{
+    "title": "Game of Life",
+    "play": "Start",
+    "stop": "Stop",
+    "clear": "Clear",
+    "menu": "Menu",
+    "speed": "Speed",
+    "size": "Size",
+    "newscreen": "New Screen",
+    "delscreen": "Delete Screen",
+    "blank": "Blank",
+    "language": "Language",
+    "savedscreens": "Saved Screens",
+    "color": "Color"
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <title data-trans="title" data-target="title">Game of Life</title>
+        <link rel="icon" type="image/png" href="./favicon.png">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./life.css">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+
+        <div id="game">
+            <nav onclick="closeMenu(event)">
+                <span class="title">
+                    <img src="./favicon.png" style="height: 38px" />
+                    <b data-trans="title">Game of Life</b>
+                </span>
+                
+                <span class="spacer"></span>
+                <span id="genCounter"></span>
+                <span id="total"></span>
+
+                <button id="startButton" onclick="startGame(event)"><i class="icon-play2"></i></button>
+                <button id="stopButton" onclick="stopGame(event)" style="display: none;"><i class="icon-stop"></i></button>
+                <button id="clearButton" onclick="clearGame(event)"><i class="icon-loop2 smaller"></i></button>
+                <button onclick="toggleMenu(event)"><b class="icon-more_vert larger"></b></button>                
+            </nav>
+            <aside>
+                <div class="langs range">
+                    <span class="upper" data-trans="language"></span>
+                    <div>
+                        <img src="/flags/pt.png" data-lang="pt" onclick="selLanguage('pt', true)" />
+                        <img src="/flags/en.png" data-lang="en" onclick="selLanguage('en', true)" />
+                        <img src="/flags/es.png" data-lang="es" onclick="selLanguage('es', true)" />
+                        <img src="/flags/fr.png" data-lang="fr" onclick="selLanguage('fr', true)" />
+                        <img src="/flags/de.png" data-lang="de" onclick="selLanguage('de', true)" />
+                        <img src="/flags/it.png" data-lang="it" onclick="selLanguage('it', true)" />                        
+                    </div>
+                </div>
+
+                <div class="colors range">
+                    <span class="upper" data-trans="color"></span>
+                    <span class="choice">
+                        <b style="background-color: #ff6347" data-bkg="#ff6347" onclick="selColor('#ff6347')"></b>
+                        <b style="background-color: #FF8C00" data-bkg="#FF8C00" onclick="selColor('#FF8C00')"></b>
+                        <b style="background-color: #FFD700" data-bkg="#FFD700" onclick="selColor('#FFD700')"></b>
+                        <b style="background-color: #20B2AA" data-bkg="#20B2AA" onclick="selColor('#20B2AA')"></b>
+                        <b style="background-color: #3CB371" data-bkg="#3CB371" onclick="selColor('#3CB371')"></b>
+                        <b style="background-color: #663399" data-bkg="#663399" onclick="selColor('#663399')"></b>
+                        <b style="background-color: #6A5ACD" data-bkg="#6A5ACD" onclick="selColor('#6A5ACD')"></b>                        
+                    </span>
+
+                </div>
+                <span class="range">
+                    <span class="upper" data-trans="speed"></span>
+                    <input type="range" id="interval" min="20" max="200" step="10" value="90" oninput="modifyInterval()">
+                </span>
+
+                <span class="range">
+                    <span class="upper" data-trans="size"></span>
+                    <input type="range" id="size" min="8" max="32" step="4" value="12" oninput="modifySize()">
+                </span>
+
+                <span class="range">
+                    <span class="upper" data-trans="savedscreens"></span>
+                    <select id="screens" onchange="chooseScreen()"></select>
+                </span>
+                <span class="btns">
+                    <button onclick="deleteScreen()"><i class="icon-bin2"></i></button>
+                    <button onclick="saveScreen()"><i class="icon-floppy-disk"></i></button>                    
+                </span>
+                <span>
+                    <span class="moving">
+                        <button onclick="moveGrid('u')"><i class="icon-circle-up"></i></button>
+                        <button onclick="moveGrid('d')"><i class="icon-circle-down"></i></button>                        
+                        <button onclick="moveGrid('l')"><i class="icon-circle-left"></i></button>
+                        <button onclick="moveGrid('r')"><i class="icon-circle-right"></i></button>                        
+                    </span>
+
+                </span>
+            </aside>
+
+            <canvas id="life"></canvas>
+        </div>
+            
+
+        <script src="./life.js"></script>
+    </body>
+</html>

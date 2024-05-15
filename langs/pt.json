@@ -1,0 +1,15 @@
+{
+    "title": "Jogo da Vida",
+    "play": "Iniciar",
+    "stop": "Parar",
+    "clear": "Zerar",
+    "menu": "Menu",
+    "speed": "Velocidade",
+    "size": "Tamanho",
+    "newscreen": "Nova Tela",
+    "delscreen": "Deletar Tela",
+    "blank": "Em Branco",
+    "language": "Língua",
+    "savedscreens": "Telas Salvas",
+    "color": "Cor"
+}
