@@ -1,19 +1,26 @@
 let canvas, cx, nav, menu;
 let side = 12, gutter = 2, rows = 0, cols = 0;
-let grid = [], lifeMap = [], gridID = null, running = false;
+let grid = [], lifeMap = [], snapShot = [], gridID = null, running = false;
+let infoDlg = null, totals;
 let interval = 90, genCounter = 0;
+let aliveObj, birthsObj, deathsObj;
 let startButton, stopButton, clearButton;
 let screens = null;
 let dom_genCounter;
 let deadCellColor = '#EFEFEF';
-let liveCellColor = '#FF6347';
-let haslivedColor = '#FFD4CC';
+let colorIndex = localStorage.getItem('color') || 'r';
+let liveCellColor = getColor(colorIndex);
+let haslivedColor = shadeColors(liveCellColor);
 let gamePrefix = 'GoL_';
 let language = localStorage.getItem('lang') || navigator.language.split('-').shift();
-let color = '';
+let translation = {};
+let infinite = false;
+let mouseHandle = false;
+let oldCell = '';
+let root = document.querySelector(':root');
 
 selLanguage(language);
-selColor('#ff6347');
+selColor(colorIndex);
 
 window.addEventListener('load', function(event) {
     canvas = document.querySelector('canvas');
@@ -25,18 +32,35 @@ window.addEventListener('load', function(event) {
     clearButton = document.getElementById('clearButton');
     dom_genCounter = document.getElementById('genCounter');
     cx = canvas.getContext('2d');
-    cx.lineWidth = 1;
+    infoDlg = document.getElementById('info');
+    totals = document.getElementById('totals');
 
-    canvas.addEventListener('mousemove', function(e) { e.preventDefault(); mouseEvents(e); }, false);
-    canvas.addEventListener('touchmove', function(e) { e.preventDefault(); mouseEvents(e); }, false);
-    canvas.addEventListener('click', function(e) { e.preventDefault(); mouseEvents(e, true); }, false);
-    canvas.addEventListener('contextmenu', (e)=> { e.preventDefault(); mouseEvents(e, true); return false; } ); 
+
+    aliveObj = document.getElementById('alive');
+    birthsObj = document.getElementById('births');
+    deathsObj = document.getElementById('deaths');
+    //cx.lineWidth = 1;
+
+    //infoDlg.showModal();
+    canvas.addEventListener('mousemove',   function(e) { e.preventDefault(); mouseEvents(e); }, false);
+    canvas.addEventListener('touchmove',   function(e) { e.preventDefault(); mouseEvents(e); }, false);
+    canvas.addEventListener('click',       function(e) { e.preventDefault(); mouseEvents(e, true); }, false);
+    canvas.addEventListener('contextmenu', function(e) { e.preventDefault(); mouseEvents(e, true); return false; } ); 
 
     initGrid();
     getAllScreens();
+
+    setInterval(() => {
+        if (running) {
+            let usedPerc = usedPercent();
+            totals.querySelector('span:nth-child(3) > b:first-child').textContent = usedPerc.toFixed(1) + '%';
+            root.style.setProperty('--percent', usedPerc);
+        }
+    }, 1000)
+
 });
 
-window.addEventListener('resize', initGrid);
+window.addEventListener('resize', handleGridResize);
 
 function hide(ele) { ele.style.display = 'none'; }
 function show(ele) { ele.style.display = 'inline-block'; }
@@ -57,25 +81,44 @@ function selLanguage(lang, save) {
     [...document.querySelectorAll('div.langs > div > img')].forEach(ele => ele.classList.remove('sel'));
     document.querySelector('div.langs > div > img[data-lang=' + lang + ']').classList.add('sel');
     translate(lang);
+
     if (save) {
         localStorage.setItem('lang', lang)
     }
 }
 
-function selColor(clr) {
+function selColor(index) {
+    let color = getColor(index);
     [...document.querySelectorAll('div.colors > span.choice > b')].forEach(ele => ele.classList.remove('sel')); 
-    document.querySelector('div.colors > span.choice > b[data-bkg="' + clr + '"]').classList.add('sel');
+    document.querySelector('div.colors > span.choice > b[data-bkg="' + color + '"]').classList.add('sel');
 
-    let root = document.querySelector(':root');
-    root.style.setProperty('--color', clr);
+    root.style.setProperty('--color', color);
 
-    color = clr;
+    let oldLink = document.querySelector("link[rel='icon']");
+    let newLink = document.createElement('link');
+    newLink.rel = 'icon';
+    newLink.type = 'image/png';
+    newLink.href = `./favicon-${index}.png`;
+    document.head.removeChild(oldLink);
+    document.head.appendChild(newLink);
+
+    localStorage.setItem('color', index);
+
+    liveCellColor = color;
+    haslivedColor = shadeColors(color); 
+    if (!running) { drawGrid(); }
+}
+
+
+function getColor(index) {
+    let colors = { r:  '#ff6347', o: '#FF8C00', y: '#FFD700', g: '#3CB371', b: '#20B2AA', p: '#5c51f7', v: '#663399' }
+    return colors[index];
 }
 
 async function translate(lang) {
     let resp = await fetch('/langs/' + lang + '.json');
-    let translation = await resp.json();
     let eles = document.querySelectorAll('[data-trans]');
+    translation = await resp.json();
 
     [...eles].forEach(ele => {
         let key = ele.getAttribute('data-trans');
@@ -84,79 +127,107 @@ async function translate(lang) {
 
         switch (target) {
             case 'title': document.title = content; break;
-
+            case 'aria': ele.setAttribute('aria-label', content); break;
             default: ele.textContent = content; break;
         }
-    })
-    console.log(eles)
-    
+    });   
+}
+
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function handleGridResize() {
+    if (grid && grid.length) {
+        let oldGrid = clone(grid);
+        let oldLMap = clone(lifeMap);
+        initGrid();
+        mergeScreen(oldGrid, oldLMap);
+    }
 }
 
 function initGrid() {
-    let oldGrid
-    if (grid.length) {
-        oldGrid = JSON.parse(JSON.stringify(grid));
-    }
     canvas.width = canvas.offsetWidth;
-    canvas.height = document.body.scrollHeight - 50;
+    canvas.height = canvas.offsetHeight;
 
     let sideGutter = side + gutter;
 
-    rows = Math.floor(canvas.width / sideGutter);
-    cols = Math.floor(canvas.height / sideGutter);
+    rows = Math.ceil(canvas.width / sideGutter);
+    cols = Math.ceil(canvas.height / sideGutter);
+
+/*     rows = Math.ceil((canvas.width / sideGutter) * 1.25);
+    cols = Math.ceil((canvas.height / sideGutter) * 1.25); */
     
     console.log(rows, cols)
 
-    canvas.width = rows * sideGutter + gutter;
-    canvas.height = cols * sideGutter + gutter;         
-    
     // Inicializa matriz do grid
     grid = [];
-    for (let row = 0; row < rows; row++) { 
-        grid[row] = [];
-        lifeMap[row] = [];
-        for (let col = 0; col < cols; col++) { 
-            grid[row][col] = 0; 
-            lifeMap[row][col] = 0; 
-        }
-    }   
-    document.getElementById('total').innerHTML = '<b>' + rows + ' x ' + cols + '</b><small>' + (rows * cols) + '</small>';      
+    blank(); 
+    updateStats();
     drawGrid();       
 }
 
 
+function updateStats() {
+    let rows = grid.length;
+    let cols = grid[0].length;
+    let usedPerc = usedPercent();
+
+    totals.querySelector('span:first-child').textContent = rows + ' x ' + cols;
+    totals.querySelector('span:nth-child(2) > b:first-child').textContent = (rows * cols) ;
+    totals.querySelector('span:nth-child(3) > b:first-child').textContent = usedPerc.toFixed(1) + '%';
+
+    root.style.setProperty('--percent', usedPerc);
+}
+
 function modifyInterval() {
-    interval = +(document.getElementById('interval').value || '90'); console.log(interval)
+    interval = 200 - (parseInt(document.getElementById('interval').value) || 90); 
 }
 
 function modifySize() {
     side = +(document.getElementById('size').value || '12');
-    initGrid();
+    handleGridResize();
 }
 
 function getCellUnderMouse(coordX, coordY) {
-    let x = coordX - canvas.offsetLeft - gutter - 1;
-    let y = coordY - canvas.offsetTop - gutter - 1;
+    let boxSize = side + gutter;
+    let row = Math.floor(coordX / boxSize);
+    let col = Math.floor(coordY / boxSize);
 
-    let row = Math.floor(x / (side + gutter));
-    let col = Math.floor(y / (side + gutter));
     return { row, col };
 }
 
 // Processa clicks e moves
 function mouseEvents(e, isClick) {
-    let { row, col } = getCellUnderMouse(e.pageX || e.targetTouches[0].pageX, e.pageY || e.targetTouches[0].pageY)
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (e.targetTouches) { 
+        x = x || e.targetTouches[0].clientX - menu.offsetWidth;
+        y = y || e.targetTouches[0].clientY;
+    }
 
-    if (e.buttons === 1 || (isClick && e.button === 0) || (e.targetTouches && e.targetTouches.length)) {
-        grid[row][col] = 1;
-        drawCell(row, col, true);
+    let { row, col } = getCellUnderMouse(x, y);
+    let hasTouch = e.targetTouches && e.targetTouches.length;
+
+    if (e.buttons === 1 || (isClick && e.button === 0) || hasTouch) {
+        if (hasTouch) {
+            let cell = grid[row][col];
+            grid[row][col] = cell ? 0 : 1;
+            drawCell(row, col, !!cell);
+        } else {
+            grid[row][col] = 1;
+            drawCell(row, col, true);
+        }
+
 
     } else if (e.buttons == 2 || (isClick && e.button === 2)) {
         grid[row][col] = 0;
         drawCell(row, col, false);
     }
 
-    if (isClick || (e.targetTouches && e.targetTouches.length)) { menu.classList.remove('open'); }
+
+
+    //if (isClick || (e.targetTouches && e.targetTouches.length)) { menu.classList.remove('open'); }
 }            
 
 function gamePlay() {
@@ -173,10 +244,13 @@ function startGame(e) {
         e.preventDefault();
         e.stopPropagation();
     }
-    running = true;
+    snapShot = clone(grid);
     hide(startButton);
     show(stopButton);
-    setTimeout(gamePlay, interval);
+    setTimeout(() => {
+        running = true;
+        gamePlay();
+    }, interval);
 }
 
 // Para o jogo
@@ -188,8 +262,27 @@ function stopGame(e) {
     running = false;
     show(startButton);
     hide(stopButton);
-    //if (gridID) { clearInterval(gridID); }
-    
+    updateStats();
+}
+
+// Para o jogo e mostra o que estava na tela quando o jogo iniciou
+async function resetGame() {
+    if (snapShot.length) { 
+        if (running) { 
+            stopGame(); 
+            await new Promise(r => setTimeout(r, interval));
+        }
+        blank(); 
+        grid = clone(snapShot);
+        drawGrid();
+        screens.selectedIndex = 0;
+        genCounter = 0;
+        dom_genCounter.innerText = 'Gen --';      
+        
+        aliveObj.textContent = '0';
+        birthsObj.textContent = '0';
+        deathsObj.textContent = '0';      
+    }
 }
 
 // Zera a atividade e apaga o grid.
@@ -198,26 +291,32 @@ function clearGame() {
     setTimeout(function() { 
         blank(); 
         drawGrid();
+        screens.selectedIndex = 0;
         genCounter = 0;
-        dom_genCounter.innerText = genCounter;        
+        dom_genCounter.innerText = 'Gen --';     
+        aliveObj.textContent = '0';
+        birthsObj.textContent = '0';
+        deathsObj.textContent = '0';   
+
     }, running ? interval + 10 : 0);
 }
 
 // Zera a matriz bidimensional que contém a representação das células (Grid)
 function blank() {
     for (let row = 0; row < rows; row++) { 
-        for (let col = 0; col < cols; col++) { 
-            grid[row][col] = 0; 
-            lifeMap[row][col] = 0; 
-        }
+        grid[row] = new Array(cols).fill(0);
+        lifeMap[row] = new Array(cols).fill(0);
     }
-    screens.selectedIndex = 0;
+
 }
 
 // Computa uma geração
 function generation() {
-    //console.time('GEN')
+    console.time('GEN')
     let changeTrack = [];
+    let births = 0;
+    let deaths = 0;
+    let alive  = 0;
 
     for (let row = 0; row < rows; row++) { 
         for (let col = 0; col < cols; col++) { 
@@ -229,6 +328,8 @@ function generation() {
                 if (neigh == 3) {
                     // Nasceu
                     changeTrack.push({ r: row, c: col, v: 1 });
+                    births++;
+                    alive++;
                 }
             } else {
                 // Cheio
@@ -238,15 +339,18 @@ function generation() {
                         // Morreu por isolamento
                         changeTrack.push({ r: row, c: col, v: 0 });
                         lifeMap[row][col] = 1;
+                        deaths++;
                         break;
                     case 2:
                     case 3:
                         // Sobreviveu, não faça nada
+                        alive++;
                         break;
                     default:
                         // Morreu por superpopulação
                         changeTrack.push({ r: row, c: col, v: 0 });
                         lifeMap[row][col] = 1;
+                        deaths++;
                         break;
                 }
             }
@@ -258,24 +362,44 @@ function generation() {
     } else {
         changeTrack.forEach(function(cell) { grid[cell.r][cell.c] = cell.v; });
         genCounter++;
-        dom_genCounter.innerText = genCounter;
+        dom_genCounter.innerText = 'Gen ' + genCounter;
     } 
-    //console.timeEnd('GEN')
+
+    aliveObj.textContent = alive;
+    birthsObj.textContent = births;
+    deathsObj.textContent = deaths;
+    console.timeEnd('GEN')
+
 }
 
 function countNeighbors(row, col) {
     let resp = 0;
-    let OffsetX = [-1, 0, 1, 1, 1, 0, -1, -1];
-    let OffsetY = [-1, -1, -1, 0, 1, 1, 1, 0];
+    let OffsetX = [-1,  0,  1, 1, 1, 0, -1, -1];
+    let OffsetY = [-1, -1, -1, 0, 1, 1,  1,  0];
     
-    for (let i = 0; i < 8; i++) {
-        let xx = row + OffsetX[i];
-        let yy = col + OffsetY[i];
-        
-        if (xx >= 0 && xx < rows && yy >= 0 && yy < cols) {
-            if (grid[xx][yy] != 0) { resp++; }                       
+    if (infinite) {
+        for (let i = 0; i < 8; i++) {
+            let xx = row + OffsetX[i];
+            let yy = col + OffsetY[i];
+            
+            if (xx < 0) { xx = rows - 1; }
+            if (xx >= rows) { xx = 0; } 
+            if (yy < 0) { yy = cols - 1; }
+            if (yy >= cols) { yy = 0; }
+ 
+            if (grid[xx][yy] != 0) { resp++; } 
         }
+    } else {      
+        for (let i = 0; i < 8; i++) {
+            let xx = row + OffsetX[i];
+            let yy = col + OffsetY[i];
+            
+            if (xx >= 0 && xx < rows && yy >= 0 && yy < cols) {
+                if (grid[xx][yy] != 0) { resp++; }                       
+            } 
+        }        
     }
+
     return resp;
 }
 
@@ -299,7 +423,7 @@ function drawGrid() {
     //console.time('DRAWGRID')
     for (let row = 0; row < rows; row++) { 
         for (let col = 0; col < cols; col++) { 
-            drawCell(row, col);
+            drawCell(row, col); 
         }
     }
     //console.timeEnd('DRAWGRID')
@@ -310,13 +434,26 @@ function rgb2Hex(r, g, b) {
     return ((r << 16) | (g << 8) | b).toString(16);
 }
 
-function saveScreen() {
-    let name = prompt('Enter a name');
-    if (name) {
-        localStorage.setItem(gamePrefix + name, JSON.stringify(grid));
+function saveScreen() { console.log(screens.value)
+    let curScreen = screens.value;
 
+    if (curScreen) {
+        localStorage.setItem(curScreen, JSON.stringify(grid));
         getAllScreens(name);
+    } else {
+        let name = prompt('Enter a name');
+        if (name) {
+            let names = [...(document.querySelectorAll('#screens > option') || [])].map(s => s.text);
+            if (names.includes(name)) {
+                alert(translation.errnameexists);
+                return;
+            }
+
+            localStorage.setItem(gamePrefix + name, JSON.stringify(grid));
+            getAllScreens(name);
+        }        
     }
+
 }
 
 function getAllScreens(preSelKey) {
@@ -334,13 +471,13 @@ function getAllScreens(preSelKey) {
     });
 }
 
-function loadScreen(name) { console.log(name)
+function loadScreen(name) { 
     if (!name) { blank(); return; }
-    let screen = localStorage.getItem(name); console.log(screen)
+    let screen = localStorage.getItem(name); 
     if (screen) {
         try {
             let arr = JSON.parse(screen);
-            let scrRows = arr.length;
+/*             let scrRows = arr.length;
             let scrCols = arr[0].length;
 
             for (let row = 0; row < rows; row++) { 
@@ -351,18 +488,41 @@ function loadScreen(name) { console.log(name)
                         drawCell(row, col);
                     }
                 }
-            }
+            } */
+            mergeScreen(arr);
             genCounter = 0;
             dom_genCounter.innerText = genCounter;
 
         } catch (error) {
-            alert('Could not load screen ' + name)
+            alert(translation.errnoload + ' ' + name)
+        }
+    }
+}
+
+
+function mergeScreen(grdArr, lmapArr) {
+    let scrRows = grdArr.length;
+    let scrCols = grdArr[0].length;
+
+    for (let row = 0; row < rows; row++) { 
+        for (let col = 0; col < cols; col++) { 
+            if (row < scrRows && col < scrCols) { 
+                grid[row][col] = grdArr[row][col] || 0; 
+                lifeMap[row][col] = lmapArr ? lmapArr[row][col] || 0 : 0;
+                drawCell(row, col);
+            }
         }
     }
 }
 
 function chooseScreen() { 
+    initGrid();
     loadScreen(screens.value || '');
+    snapShot = clone(grid);
+}
+
+function getBounds() {
+    console.log(getItemBounds(grid));
 }
 
 
@@ -376,31 +536,98 @@ function deleteScreen() {
     }
 }
 
-
-function moveGrid(dir) {
-    let scrRows = grid.length;
-    let scrCols = grid[0].length;
-
-    switch(dir) {
-        case 'l':
-            grid.shift();
-            grid.push(new Array(scrCols). fill(0));
-            break;
-        case 'r':
-            grid.pop();
-            grid.unshift(new Array(scrCols). fill(0));   
-            break;
-        case 'u':
-            grid.forEach(g => {
-                g.shift();
-                g.push(0);
-            });  
-            break;   
-        case 'd':
-            grid.forEach(g => {
-                g.pop();
-                g.unshift(0);
-            });               
+function controlMouse(e, op, dir) {
+    if (op == 'p') {
+        clearInterval(mouseHandle);
+        mouseHandle = setInterval(() => moveGrid(dir), 50);
+    } else {
+        clearInterval(mouseHandle);
     }
-    drawGrid();
+    
 }
+
+function moveGrid(dir) { 
+    //if (mouseFlag) {
+        let scrRows = grid.length;
+        let scrCols = grid[0].length;
+
+        switch(dir) {
+            case 'l':
+                grid.shift();
+                grid.push(new Array(scrCols). fill(0));
+                break;
+            case 'r':
+                grid.pop();
+                grid.unshift(new Array(scrCols). fill(0));   
+                break;
+            case 'u':
+                grid.forEach(g => {
+                    g.shift();
+                    g.push(0);
+                });  
+                break;   
+            case 'd':
+                grid.forEach(g => {
+                    g.pop();
+                    g.unshift(0);
+                });               
+        }
+        drawGrid();
+    //}
+}
+
+
+function shadeColors(color, percent = 0.70) {
+    let f = parseInt(color.slice(1), 16);
+    let t = percent < 0 ? 0 : 255;
+    let p = percent < 0 ? percent * -1 : percent;
+    let R = f >> 16;
+    let G = f >> 8 & 0x00FF;
+    let B = f & 0x0000FF;
+    let resp = (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B));
+    return '#' + resp.toString(16).slice(1);
+}
+
+
+function usedPercent() {
+    let usedCells = 0;
+    let totalRows = lifeMap.length;
+    let totalCols = lifeMap[0].length;
+    let total = totalRows * totalCols;
+
+    for (let row = 0; row < totalRows; row++) { 
+        for (let col = 0; col < totalCols; col++) { 
+            usedCells += lifeMap[row][col] ? 1 : 0;
+        }
+    }
+    return +(usedCells * 100 / total).toFixed(1);
+}
+
+function getItemBounds(arr) {
+    let rows = arr.length;
+    let cols = arr[0].length;
+    let bounds = { inix: Number.MAX_VALUE, iniy: Number.MAX_VALUE, endx: 0, endy: 0 }
+
+    for (let row = 0; row < rows; row++) { 
+        for (let col = 0; col < cols; col++) { 
+            if (arr[row][col]) {
+                bounds.inix = Math.min(bounds.inix, row);
+                bounds.iniy = Math.min(bounds.iniy, col);
+                bounds.endx = Math.max(bounds.endx, row);
+                bounds.endy = Math.max(bounds.endy, col);
+            }
+        }
+    }
+    return bounds;
+}
+
+
+function showInfo() {
+    infoDlg.showModal();
+}
+
+function closeDialog() {
+    infoDlg.close();
+}
+
+

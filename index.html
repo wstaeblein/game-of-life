@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt">
     <head>
-        <title data-trans="title" data-target="title">Game of Life</title>
-        <link rel="icon" type="image/png" href="./favicon.png">
+        <title>Game of Life</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="manifest.json">
+        <link rel="icon" type="image/png" href="./favicon.png">
+        <meta name="description" content="Conway\'s Game of Life cellular automation simulates life according to 4 simple rules">
+
+        <meta name="author" content="Walter Staeblein">
+        <meta property="og:title" content="Game of Life">
+        <meta property="og:description" content="Conway's Game of Life cellular automation simulates life according to 4 simple rules">
+        <meta property="og:url" content="https://js-game-of-life.netlify.app/">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="app">
+        <meta name="twitter:title" content="Game of Life">
+        <meta name="twitter:description" content="Conway's Game of Life cellular automation simulates life according to 4 simple rules">
+        <link rel="icon" href="./favicon.png">
+
+
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -12,24 +27,73 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-
         <div id="game">
-            <nav onclick="closeMenu(event)">
-                <span class="title">
-                    <img src="./favicon.png" style="height: 38px" />
-                    <b data-trans="title">Game of Life</b>
-                </span>
-                
-                <span class="spacer"></span>
-                <span id="genCounter"></span>
-                <span id="total"></span>
 
-                <button id="startButton" onclick="startGame(event)"><i class="icon-play2"></i></button>
-                <button id="stopButton" onclick="stopGame(event)" style="display: none;"><i class="icon-stop"></i></button>
-                <button id="clearButton" onclick="clearGame(event)"><i class="icon-loop2 smaller"></i></button>
-                <button onclick="toggleMenu(event)"><b class="icon-more_vert larger"></b></button>                
-            </nav>
             <aside>
+                <nav onclick="closeMenu(event)">
+                    <span class="title">
+                        <span class="logo">
+                            <b></b><i></i><i></i>
+                            <i></i><b></b><b></b>
+                            <b></b><b></b><i></i>
+                        </span>
+                        <span>
+                            <b style="font-size: 14px">Conway's</b><br>
+                            <b>Game of Life</b>
+                        </span>
+                    </span>
+
+                    <span class="mainbtns">
+                        <button id="startButton" data-trans="play" data-target="aria" data-balloon-pos="up" onclick="startGame(event)"><i class="icon-play2"></i></button>
+                        <button id="stopButton" data-trans="stop" data-target="aria" data-balloon-pos="up" onclick="stopGame(event)" style="display: none"><i class="icon-stop"></i></button>
+                        <button id="resetButton" data-trans="clear" data-target="aria" data-balloon-pos="up" onclick="resetGame()"><i class="flip"><i class="icon-spinner11 smaller up2"></i></i></button>
+                        <button id="clearButton" data-trans="clear" data-target="aria" data-balloon-pos="up" onclick="clearGame(event)"><i class="icon-loop2 smaller up2"></i></button>
+                        <button id="infobtn" data-trans="info" data-target="aria" data-balloon-pos="up" onclick="showInfo(event)"><i class="icon-info"></i></button>
+                        <button id="helpbtn" data-trans="help" data-target="aria" data-balloon-pos="up" onclick="showInfo(event)"><i class="icon-question"></i></button>
+                    </span>
+
+                    <span id="genCounter">0</span>
+
+                    <div class="stats">
+                        <div id="totals">
+                            <span></span>
+                            <span>
+                                <b></b>
+                                <b data-trans="cells"></b>
+                            </span>
+                            <span>
+                                <b></b>
+                                <b data-trans="used"></b>
+                            </span>
+                            
+                        </div>  
+                        <div>
+                            <svg viewBox="0 0 20 20" style="transform: rotate(-90deg); width: 100%; height: 100%">
+                                <circle r="10" cx="10" cy="10" fill="#efefef" />
+                                <circle r="5" cx="10" cy="10" fill="transparent"
+                                        stroke="var(--color)"
+                                        stroke-width="10"
+                                        stroke-dasharray="calc(var(--percent) * 31.42 / 100) 31.42" />
+                            </svg>
+                        </div>                            
+                    </div>
+
+                    <div class="condition">
+                        <span data-trans="alive" data-target="aria" data-balloon-pos="up-left"><i class="icon-alive"></i>&nbsp;<span id="alive">0</span></span>
+                        <span data-trans="births" data-target="aria" data-balloon-pos="up"><i class="icon-birth"></i>&nbsp;<span id="births">0</span></span>
+                        <span data-trans="deaths" data-target="aria" data-balloon-pos="up-right"><i class="icon-death"></i>&nbsp;<span id="deaths">0</span></span>
+                    </div>                    
+                </nav> 
+                
+                <span class="range">
+                    <span class="upper" data-trans="savedscreens"></span>
+                    <span class="byside">
+                        <select id="screens" class="grow" onchange="chooseScreen()"></select>
+                        <button data-trans="delscreen" data-target="aria" data-balloon-pos="up-right" onclick="deleteScreen()"><i class="icon-bin"></i></button>
+                    </span>
+                </span>                
+
+
                 <div class="langs range">
                     <span class="upper" data-trans="language"></span>
                     <div>
@@ -45,48 +109,69 @@
                 <div class="colors range">
                     <span class="upper" data-trans="color"></span>
                     <span class="choice">
-                        <b style="background-color: #ff6347" data-bkg="#ff6347" onclick="selColor('#ff6347')"></b>
-                        <b style="background-color: #FF8C00" data-bkg="#FF8C00" onclick="selColor('#FF8C00')"></b>
-                        <b style="background-color: #FFD700" data-bkg="#FFD700" onclick="selColor('#FFD700')"></b>
-                        <b style="background-color: #20B2AA" data-bkg="#20B2AA" onclick="selColor('#20B2AA')"></b>
-                        <b style="background-color: #3CB371" data-bkg="#3CB371" onclick="selColor('#3CB371')"></b>
-                        <b style="background-color: #663399" data-bkg="#663399" onclick="selColor('#663399')"></b>
-                        <b style="background-color: #6A5ACD" data-bkg="#6A5ACD" onclick="selColor('#6A5ACD')"></b>                        
+                        <b style="background-color: #ff6347" data-bkg="#ff6347" onclick="selColor('r')"></b>
+                        <b style="background-color: #FF8C00" data-bkg="#FF8C00" onclick="selColor('o')"></b>
+                        <b style="background-color: #FFD700" data-bkg="#FFD700" onclick="selColor('y')"></b>
+                        <b style="background-color: #3CB371" data-bkg="#3CB371" onclick="selColor('g')"></b>
+                        <b style="background-color: #20B2AA" data-bkg="#20B2AA" onclick="selColor('b')"></b>
+                        <b style="background-color: #5c51f7" data-bkg="#5c51f7" onclick="selColor('p')"></b>          
+                        <b style="background-color: #663399" data-bkg="#663399" onclick="selColor('v')"></b>              
                     </span>
 
                 </div>
                 <span class="range">
                     <span class="upper" data-trans="speed"></span>
-                    <input type="range" id="interval" min="20" max="200" step="10" value="90" oninput="modifyInterval()">
+                    <input type="range" data-trans="speedanim" data-target="aria" data-balloon-pos="up-right" id="interval" min="20" max="200" step="10" value="90" oninput="modifyInterval()">
                 </span>
 
                 <span class="range">
                     <span class="upper" data-trans="size"></span>
-                    <input type="range" id="size" min="8" max="32" step="4" value="12" oninput="modifySize()">
+                    <input type="range" data-trans="sizerange" data-target="aria" data-balloon-pos="up-right" id="size" min="8" max="80" step="4" value="12" oninput="modifySize()">
                 </span>
 
-                <span class="range">
-                    <span class="upper" data-trans="savedscreens"></span>
-                    <select id="screens" onchange="chooseScreen()"></select>
-                </span>
+
                 <span class="btns">
-                    <button onclick="deleteScreen()"><i class="icon-bin2"></i></button>
-                    <button onclick="saveScreen()"><i class="icon-floppy-disk"></i></button>                    
+                    <button data-trans="newscreen" data-target="aria" data-balloon-pos="up-left" onclick="saveScreen()"><i class="icon-floppy-disk"></i></button>                    
                 </span>
                 <span>
                     <span class="moving">
-                        <button onclick="moveGrid('u')"><i class="icon-circle-up"></i></button>
-                        <button onclick="moveGrid('d')"><i class="icon-circle-down"></i></button>                        
-                        <button onclick="moveGrid('l')"><i class="icon-circle-left"></i></button>
-                        <button onclick="moveGrid('r')"><i class="icon-circle-right"></i></button>                        
+                        <button data-trans="moveup"    data-target="aria" data-balloon-pos="up-left"   data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'u')" onmouseup="controlMouse(event, 'u', 'u')"><i class="icon-circle-up"></i></button>
+                        <button data-trans="movedown"  data-target="aria" data-balloon-pos="down-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'd')" onmouseup="controlMouse(event, 'u', 'd')"><i class="icon-circle-down"></i></button>                        
+                        <button data-trans="moveleft"  data-target="aria" data-balloon-pos="up-left"   data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'l')" onmouseup="controlMouse(event, 'u', 'l')"><i class="icon-circle-left"></i></button>
+                        <button data-trans="moveright" data-target="aria" data-balloon-pos="up-left"   data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'r')" onmouseup="controlMouse(event, 'u', 'r')"><i class="icon-circle-right"></i></button>                        
                     </span>
 
                 </span>
             </aside>
 
-            <canvas id="life"></canvas>
+            <canvas id="life" width="300" height="200"></canvas>
         </div>
             
+        <dialog id="info">
+            <div class="body">
+                <span class="close" onclick="closeDialog()">×</span>
+                <span class="title">
+                    <span class="logo">
+                        <b></b><i></i><i></i>
+                        <i></i><b></b><b></b>
+                        <b></b><b></b><i></i>
+                    </span>
+                    <span>
+                        <b style="font-size: 14px">Conway's</b><br>
+                        <b>Game of Life</b>
+                    </span>
+                </span>
+                <main>
+                    <div class="tabs">
+                        <span class="sel" onclick="setTab(1)">O Que é</span>
+                        <span onclick="setTab(2)">Como Usar</span>
+                        <span onclick="setTab(3)">Sobre</span>
+                    </div>
+
+                </main>                
+            </div>
+        </dialog>
+
 
         <script src="./life.js"></script>
     </body>
