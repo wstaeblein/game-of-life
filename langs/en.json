@@ -12,6 +12,8 @@
     "alive": "Alive",
     "births": "Births",
     "deaths": "Deaths",
+    "presets": "Presets",
+    "users": "User's",
     "sizerange": "Set the cell size",
     "speedanim": "Set the animation speed",
     "newscreen": "New Screen",

@@ -88,7 +88,8 @@
                 <span class="range">
                     <span class="upper" data-trans="savedscreens"></span>
                     <span class="byside">
-                        <select id="screens" class="grow" onchange="chooseScreen()"></select>
+                        <select id="screens" class="grow" onchange="chooseScreen()">
+                        </select>
                         <button data-trans="delscreen" data-target="aria" data-balloon-pos="up-right" onclick="deleteScreen()"><i class="icon-bin"></i></button>
                     </span>
                 </span>                
@@ -121,7 +122,7 @@
                 </div>
                 <span class="range">
                     <span class="upper" data-trans="speed"></span>
-                    <input type="range" data-trans="speedanim" data-target="aria" data-balloon-pos="up-right" id="interval" min="20" max="200" step="10" value="90" oninput="modifyInterval()">
+                    <input type="range" data-trans="speedanim" data-target="aria" data-balloon-pos="up-right" id="interval" min="0" max="400" step="10" value="120" oninput="modifyInterval()">
                 </span>
 
                 <span class="range">
@@ -134,7 +135,7 @@
                     <button data-trans="newscreen" data-target="aria" data-balloon-pos="up-left" onclick="saveScreen()"><i class="icon-floppy-disk"></i></button>                    
                 </span>
                 <span>
-                    <span class="moving">
+                    <span class="">
                         <button data-trans="moveup"    data-target="aria" data-balloon-pos="up-left"   data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'u')" onmouseup="controlMouse(event, 'u', 'u')"><i class="icon-circle-up"></i></button>
                         <button data-trans="movedown"  data-target="aria" data-balloon-pos="down-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'd')" onmouseup="controlMouse(event, 'u', 'd')"><i class="icon-circle-down"></i></button>                        
                         <button data-trans="moveleft"  data-target="aria" data-balloon-pos="up-left"   data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'l')" onmouseup="controlMouse(event, 'u', 'l')"><i class="icon-circle-left"></i></button>
@@ -173,6 +174,7 @@
         </dialog>
 
 
+        <script src="./screens.js"></script>
         <script src="./life.js"></script>
     </body>
 </html>
