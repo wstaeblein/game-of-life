@@ -22,6 +22,18 @@
     "language": "Língua",
     "savedscreens": "Telas Salvas",
     "color": "Cor",
+    "alignment": "Oções de Alinhamento",
+    "align-nw": "Topo Esquerda",
+    "align-nc": "Topo Centro",
+    "align-ne": "Topo Direita",
+
+    "align-cw": "Centro Esquerda",
+    "align-cc": "Centralizado",
+    "align-ce": "Centro Direita",
+
+    "align-bw": "Embaixo Esquerda",
+    "align-bc": "Embaixo Centro",
+    "align-be": "Embaixo Direita",
     "moveup": "Mover tudo uma linha pra cima",
     "movedown": "Mover tudo uma linha pra baixo",
     "moveleft": "Mover tudo uma coluna pra esquerda",

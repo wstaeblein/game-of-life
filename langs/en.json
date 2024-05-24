@@ -22,6 +22,18 @@
     "language": "Language",
     "savedscreens": "Saved Screens",
     "color": "Color",
+    "alignment": "Alignment Options",
+    "align-nw": "Top Left",
+    "align-nc": "Top Center",
+    "align-ne": "Top Right",
+
+    "align-cw": "Center Left",
+    "align-cc": "Centralized",
+    "align-ce": "Center Right",
+
+    "align-bw": "Bottom Left",
+    "align-bc": "Bottom Center",
+    "align-be": "Bottom Right",
     "moveup": "Move everything one row up",
     "movedown": "Move everything one row down",
     "moveleft": "Move everything one column left",

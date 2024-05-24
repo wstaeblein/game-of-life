@@ -20,7 +20,7 @@ let mouseHandle = false;
 let oldCell = '';
 let root = document.querySelector(':root');
 let offset = 20;
-
+let alignMenu = null;
 
 
 window.addEventListener('load', async function(event) {
@@ -28,6 +28,12 @@ window.addEventListener('load', async function(event) {
     await selLanguage(language);
     selColor(colorIndex);
 
+    document.addEventListener('keypress', handleKeyboard);
+    document.addEventListener('click', (e) => {
+        if (!alignMenu.contains(e.target)) { alignMenu.classList.remove('show'); }
+    });
+
+    alignMenu = document.querySelector('.alignmenu');
     canvas = document.querySelector('canvas');
     nav = document.querySelector('nav');
     menu = document.querySelector('aside');
@@ -59,7 +65,7 @@ window.addEventListener('load', async function(event) {
     setInterval(() => {
         if (running) {
             let usedPerc = usedPercent();
-            totals.querySelector('span:nth-child(3) > b:first-child').textContent = usedPerc.toFixed(1) + '%';
+            document.getElementById('usedPercent').textContent = usedPerc.toFixed(0) + '%';
             root.style.setProperty('--percent', usedPerc);
         }
     }, 1000)
@@ -71,10 +77,22 @@ window.addEventListener('resize', handleGridResize);
 function hide(ele) { ele.style.display = 'none'; }
 function show(ele) { ele.style.display = 'inline-block'; }
 
-function toggleMenu(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    menu.classList.toggle('open');
+function handleKeyboard(e) { console.log(e)
+    switch (e.code) {
+        case 'KeyP': startGame(); break;
+        case 'KeyS': stopGame(); break;            
+        case 'Space': running ? stopGame() : startGame(); break;
+        case 'KeyC': clearGame(); break;
+        case 'KeyR': resetGame(); break;
+    }
+}
+
+function toggleMenu(e) { 
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();       
+    }
+    alignMenu.classList.toggle('show');
 }
 
 function closeMenu(e) { console.log('closeMenu')
@@ -180,9 +198,9 @@ function updateStats() {
     let cols = grid[0].length;
     let usedPerc = usedPercent();
 
-    totals.querySelector('span:first-child').textContent = rows + ' x ' + cols;
+/*     totals.querySelector('span:first-child').textContent = rows + ' x ' + cols;
     totals.querySelector('span:nth-child(2) > b:first-child').textContent = (rows * cols) ;
-    totals.querySelector('span:nth-child(3) > b:first-child').textContent = usedPerc.toFixed(1) + '%';
+    totals.querySelector('span:nth-child(3) > b:first-child').textContent = usedPerc.toFixed(1) + '%'; */
 
     root.style.setProperty('--percent', usedPerc);
 }
@@ -566,12 +584,14 @@ function getBounds() {
 
 
 function deleteScreen() {
-    if (screens.value) {
+    if (screens.value.substr(0, 4) == gamePrefix) {
         let name = screens.value.replace(gamePrefix, '')
         if (confirm('Deletar a tela ' + name)) {
             localStorage.removeItem(screens.value);
             getAllScreens();
         }
+    } else {
+        alert('Telas predefinidas não podem ser deletadas')
     }
 }
 
@@ -680,6 +700,8 @@ function align(itemArr, pos) {
     let itemRows = itemArr.length;
     let itemCols = itemArr[0].length;
     let resp = { r: 0, c: 0 };
+    let bounds = getItemBounds(grid);
+    let content = cutItemOut(grid, bounds);
 
     switch (pos) {
         case 'center':

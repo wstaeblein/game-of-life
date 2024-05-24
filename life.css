@@ -4,6 +4,7 @@ html {
 
 :root {
     --color: #fff;
+    --light-color: #fff;
     --percent: 0;
     --balloon-border-radius: 2px;
     --balloon-color: var(--color);
@@ -184,7 +185,7 @@ section.show {
 
 .byside {
     display: flex;
-    gap: 5px;
+    gap: 10px;
 }
 
 nav {
@@ -252,18 +253,116 @@ nav > span#total > small {
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 10px;
+    width: 100%;
+    gap: 10px;
 }
 
-.stats > div:first-child {
+
+/* .stats > div:first-child {
     width: 59%;
-}
+} */
 
 .stats > div:last-child {
-    width: 39%;
+    width: 50%;
+    position: relative;
+}
+
+.stats > div:last-child > span {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
 }
 
 
-#totals {
+.movebtns {
+    position: relative;
+    width: 50%;
+    z-index: 2;
+}
+
+.movebtns > span {
+    position: absolute;
+}
+
+.movebtns > span:nth-child(1) {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.movebtns > span:nth-child(2) {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+}
+
+.movebtns > span:nth-child(3) {
+    left: 0;
+    transform: translateY(-50%);
+    top: 50%;
+}
+
+.movebtns > span:nth-child(4) {
+    right: 0;
+    transform: translateY(-50%);
+    top: 50%;
+}
+
+.movebtns > span:nth-child(5) {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+}
+
+.alignmenu {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    background-color: var(--light-color);
+    flex-direction: column;
+    top: 0;
+    left: 25px;
+    width: 130px;
+    padding: 0;
+    border-radius: 7px;
+    border: 1px solid #444;
+    font-size: 13px;
+    transition: all 0.4s ease;
+}
+
+.alignmenu.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.alignmenu > span {
+    padding: 3px 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.alignmenu > span:hover {
+    background-color: var(--color);
+    color: #fff;
+}
+
+
+/* #totals {
     display: flex;
     flex-direction: column;
     font-size: smaller;
@@ -281,7 +380,7 @@ nav > span#total > small {
     color: var(--color);
     text-shadow: 1px 1px 0 #444;
 }
-
+ */
 
 aside {
     background-color: #fff;
