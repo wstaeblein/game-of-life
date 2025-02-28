@@ -25,6 +25,16 @@
         <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./life.css">
         <link rel="stylesheet" href="./style.css">
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XD626R3J0K"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-XD626R3J0K');
+        </script>        
     </head>
     <body>
         <div id="game">
@@ -55,16 +65,7 @@
                     <span id="genCounter">0</span>
 
                     <div class="stats">
-                        <div class="movebtns">
-      <!--                       <span></span>
-                            <span>
-                                <b></b>
-                                <b data-trans="cells"></b>
-                            </span>
-                            <span>
-                                <b></b>
-                                <b data-trans="used"></b>
-                            </span> -->
+                        <div id="movebtns">
                             <span>
                                 <button data-trans="moveup" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'u')" onmouseup="controlMouse(event, 'u', 'u')"><i class="icon-circle-up"></i></button>
                             </span>

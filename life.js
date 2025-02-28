@@ -6,6 +6,7 @@ let infoDlg = null, totals;
 let interval = 90, genCounter = 0;
 let aliveObj, birthsObj, deathsObj;
 let startButton, stopButton, clearButton;
+let moveBtns = null;
 let screens = null;
 let dom_genCounter;
 let deadCellColor = '#EFEFEF';
@@ -23,6 +24,7 @@ let offset = 20;
 let alignMenu = null;
 
 
+// Page Load
 window.addEventListener('load', async function(event) {
 
     await selLanguage(language);
@@ -45,7 +47,7 @@ window.addEventListener('load', async function(event) {
     cx = canvas.getContext('2d');
     infoDlg = document.getElementById('info');
     totals = document.getElementById('totals');
-
+    moveBtns = document.getElementById('movebtns');
 
     aliveObj = document.getElementById('alive');
     birthsObj = document.getElementById('births');
@@ -272,10 +274,9 @@ function startGame(e) {
     snapShot = clone(grid);
     hide(startButton);
     show(stopButton);
-    setTimeout(() => {
-        running = true;
-        gamePlay();
-    }, interval);
+    moveBtns.classList.add('disabled');
+
+    setTimeout(() => { running = true; gamePlay(); }, interval);
 }
 
 // Para o jogo
@@ -284,6 +285,7 @@ function stopGame(e) {
         e.preventDefault();
         e.stopPropagation();
     }
+    moveBtns.classList.remove('disabled');
     running = false;
     show(startButton);
     hide(stopButton);
@@ -648,12 +650,21 @@ function shadeColors(color, percent = 0.70) {
 
 function usedPercent() {
     let usedCells = 0;
-    let totalRows = lifeMap.length;
+/*    let totalRows = lifeMap.length;
     let totalCols = lifeMap[0].length;
     let total = totalRows * totalCols;
 
-    for (let row = 0; row < totalRows; row++) { 
+     for (let row = 0; row < totalRows; row++) { 
         for (let col = 0; col < totalCols; col++) { 
+            usedCells += lifeMap[row][col] ? 1 : 0;
+        }
+    } */
+    let totalRows = lifeMap.length - offset;
+    let totalCols = lifeMap[0].length - offset;
+    let total = totalRows * totalCols;
+
+    for (let row = offset; row < totalRows; row++) { 
+        for (let col = offset; col < totalCols; col++) { 
             usedCells += lifeMap[row][col] ? 1 : 0;
         }
     }
@@ -684,14 +695,17 @@ function getItemBounds(arr) {
 }
 
 function cutItemOut(arr, bounds) {
-    let newArr = [];
+    let newArr = [], ind = 0;
     for (let row = bounds.iniRow; row <= bounds.endRow; row++) { 
         let newCol = [];
         for (let col = bounds.iniCol; col <= bounds.endCol; col++) { 
             newCol.push(arr[row][col]);
         }
-        newArr.push(newCol);
+        //console.log(newCol)
+        newArr[ind] = newCol;
+        ind++;
     }
+    console.log(newArr)
     return newArr;
 }
 
