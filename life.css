@@ -55,6 +55,10 @@ body {
     display: none;
 } */
 
+.center {
+    text-align: center;
+}
+
 dialog {
     border: none;
     background-color: transparent;
@@ -75,6 +79,37 @@ dialog > div.body {
     position: relative;
     border-radius: 7px;
     box-shadow: 3px 3px 12px 4px #333;
+    display: flex;
+    flex-direction: column;
+}
+
+dialog > div.body > main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+dialog > div.body > main > section {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 5px;
+    font-size: 14px;
+    transform: scale(0);
+    position: absolute;
+}
+
+dialog > div.body > main > section.sel {
+    transform: scale(1);
+    position: static;
+}
+
+dialog > div.body > main > section p b {
+    color: red;
+}
+dialog > div.body > main > section p img {
+    float: left;
+    margin: 0 10px 0 0;
 }
 
 dialog > div.body span.close {
@@ -130,6 +165,49 @@ dialog > div.body .tabs > span.sel {
     color: var(--color);
 }
 
+dialog#info .links {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+dialog#info a {
+    font-size: 16px;
+    background-color: var(--color);
+    color: #fff;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s transform;
+    transform: scale(1);
+    font-weight: bold;
+}
+
+dialog#info a.btn {
+    width: 92px;
+}
+
+dialog#info a > img {
+    width: 40px;
+}
+
+dialog#info a:hover {
+    transform: scale(1.1);
+}
+
+dialog#info .bmc > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+dialog#info .bmc > a > img {
+    height: 25px;
+    width: 25px;
+    object-fit: contain;
+}
 
 .disabled {
     pointer-events: none;
@@ -248,9 +326,30 @@ nav > span#total > small {
     transform: translateY(-2px);
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 25px;
+    aspect-ratio: 1 / 1;
+    border-bottom: 1px solid #888;
+    border-left: 1px solid #888;
+}
+
+.grid > span {
+    border-top: 1px solid #888;
+    border-right: 1px solid #888;
+}
+
+.grid > span.sel {
+    background-color: var(--color);
+}
+
+
+
 .mainbtns {
     display: flex;
     gap: 12px;
+    z-index: 1;
 }
 
 .stats {
@@ -310,6 +409,7 @@ nav > span#total > small {
     left: 50%;
     transform: translateX(-50%);
     bottom: 0;
+    z-index: 2;
 }
 
 #movebtns > span:nth-child(3) {
@@ -496,24 +596,31 @@ select {
 
 .langs > div {
     display: flex;
+    gap: 6px;
     justify-content: space-evenly;
     margin-top: 5px;
 }
 
-.langs > div > img {
-    width: 22px;
+.langs > div > span {
+    width: 25px;
+    height: 25px;
+    display: inline-flex;
+}
+
+.langs > div > span > img {
+    width: 100%;
     aspect-ratio: 1 / 1;
     filter: saturate(20%);
     transition: all 0.4s ease;
     cursor: pointer;
 }
 
-.langs > div > img:hover {
+.langs > div > span > img:hover {
     filter: saturate(100%);
     transform: scale(1.2);
 }
 
-.langs > div > img.sel {
+.langs > div > span > img.sel {
     filter: saturate(100%);
     cursor: default;
     transform: scale(1.5);

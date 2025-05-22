@@ -3,7 +3,7 @@ let canvas, cx, nav, menu;
 let side = 12, gutter = 2, rows = 0, cols = 0;
 let grid = [], lifeMap = [], snapShot = [], gridID = null, running = false;
 let infoDlg = null, totals;
-let interval = 90, genCounter = 0;
+let interval = 120, genCounter = 0;
 let aliveObj, birthsObj, deathsObj;
 let startButton, stopButton, clearButton;
 let moveBtns = null;
@@ -20,7 +20,7 @@ let infinite = false;
 let mouseHandle = false;
 let oldCell = '';
 let root = document.querySelector(':root');
-let offset = 20;
+let offset = 30;
 let alignMenu = null;
 
 
@@ -79,7 +79,7 @@ window.addEventListener('resize', handleGridResize);
 function hide(ele) { ele.style.display = 'none'; }
 function show(ele) { ele.style.display = 'inline-block'; }
 
-function handleKeyboard(e) { console.log(e)
+function handleKeyboard(e) { 
     switch (e.code) {
         case 'KeyP': startGame(); break;
         case 'KeyS': stopGame(); break;            
@@ -97,15 +97,15 @@ function toggleMenu(e) {
     alignMenu.classList.toggle('show');
 }
 
-function closeMenu(e) { console.log('closeMenu')
+function closeMenu(e) { 
     e.preventDefault();
     e.stopPropagation();
     menu.classList.remove('open');
 }
 
 async function selLanguage(lang, save) {
-    [...document.querySelectorAll('div.langs > div > img')].forEach(ele => ele.classList.remove('sel'));
-    document.querySelector('div.langs > div > img[data-lang=' + lang + ']').classList.add('sel');
+    [...document.querySelectorAll('div.langs > div > span > img')].forEach(ele => ele.classList.remove('sel'));
+    document.querySelector('div.langs > div > span > img[data-lang=' + lang + ']').classList.add('sel');
     await translate(lang);
 
     if (save) {
@@ -154,6 +154,7 @@ async function translate(lang) {
         switch (target) {
             case 'title': document.title = content; break;
             case 'aria': ele.setAttribute('aria-label', content); break;
+            case 'html': ele.innerHTML = content; break;
             default: ele.textContent = content; break;
         }
     });   
@@ -181,14 +182,12 @@ function initGrid() {
 
     rows = Math.ceil(canvas.width / sideGutter)  + dblOffset;
     cols = Math.ceil(canvas.height / sideGutter) + dblOffset;
-
-/*     rows = Math.ceil((canvas.width / sideGutter) * 1.25);
-    cols = Math.ceil((canvas.height / sideGutter) * 1.25); */
     
-    console.log(rows, cols)
+    console.log('GRID: ', rows, cols, rows * cols, 'VIEW: ', rows - dblOffset, cols - dblOffset);
 
     // Inicializa matriz do grid
     grid = [];
+    lifeMap = [];
     blank(); 
     updateStats();
     drawGrid();       
@@ -240,9 +239,11 @@ function mouseEvents(e, isClick) {
         if (hasTouch) {
             let cell = grid[row][col];
             grid[row][col] = cell ? 0 : 1;
+            lifeMap[row][col] = 1;
             drawCell(row, col, !!cell);
         } else {
             grid[row][col] = 1;
+            lifeMap[row][col] = 1;
             drawCell(row, col, true);
         }
 
@@ -308,7 +309,10 @@ async function resetGame() {
         
         aliveObj.textContent = '0';
         birthsObj.textContent = '0';
-        deathsObj.textContent = '0';      
+        deathsObj.textContent = '0';    
+        usedPerc = 0; 
+        document.getElementById('usedPercent').textContent = '0%';
+        updateStats();
     }
 }
 
@@ -334,12 +338,10 @@ function blank() {
         grid[row] = new Array(cols).fill(0);
         lifeMap[row] = new Array(cols).fill(0);
     }
-
 }
 
 // Computa uma geração
 function generation() {
-    console.time('GEN')
     let changeTrack = [];
     let births = 0;
     let deaths = 0;
@@ -397,8 +399,6 @@ function generation() {
     aliveObj.textContent = alive;
     birthsObj.textContent = births;
     deathsObj.textContent = deaths;
-    console.timeEnd('GEN')
-
 }
 
 function countNeighbors(row, col) {
@@ -435,10 +435,17 @@ function countNeighbors(row, col) {
 function drawCell(row, col, paint) { //console.log('draw: ', row, col)
 
     switch (paint) {
-        case true: cx.fillStyle = liveCellColor; break;
-        case false: cx.fillStyle = lifeMap[row][col] ? haslivedColor : deadCellColor; break;
+        case true: 
+            cx.fillStyle = liveCellColor; 
+            break;
+
+        case false: 
+            cx.fillStyle = lifeMap[row][col] ? haslivedColor : deadCellColor; 
+            break;
+
         default:
             cx.fillStyle = grid[row][col] ? liveCellColor : lifeMap[row][col] ? haslivedColor : deadCellColor;
+            break;
     }
 
     let sz = side + gutter;
@@ -450,20 +457,17 @@ function drawCell(row, col, paint) { //console.log('draw: ', row, col)
 }
 
 function drawGrid() {
-    //console.time('DRAWGRID')
-
     for (let row = 0; row < rows; row++) { 
         for (let col = 0; col < cols; col++) { 
+
             if (row >= offset - 1 && row < rows - offset && col >= offset - 1 && col < cols - offset) {
                 drawCell(row, col); 
             }
         }
     }
-    //console.timeEnd('DRAWGRID')
 }
 
 function rgb2Hex(r, g, b) {
-    //if (r > 255 || g > 255 || b > 255) { throw "Invalid color component"; }
     return ((r << 16) | (g << 8) | b).toString(16);
 }
 
@@ -544,7 +548,7 @@ function loadScreen(name) {
 
         } catch (error) {
             console.log(error);
-            alert(translation.errnoload + ' ' + name)
+            alert(translation.errnoload + ' ' + name);
         }
     }
 }
@@ -556,22 +560,26 @@ function mergeScreen(grdArr, lmapArr) {
     let isLoading = !!lmapArr;          // When life map is not passed the screen is being loaded, otherwise is a resize of the viewport
 
     for (let row = 0; row < rows; row++) { 
-        for (let col = 0; col < cols; col++) { 
-            if (row < scrRows && col < scrCols) { 
+        let rr = row + offset;
 
+        for (let col = 0; col < cols; col++) { 
+
+            if (row < scrRows && col < scrCols) { 
+                let cc = col + offset;
+                
                 if (!isLoading) {
-                    grid[row + offset][col + offset] = grdArr[row][col] || 0; 
-                    lifeMap[row + offset][col + offset] = 0;
-                    drawCell(row + offset, col + offset);                    
+                    grid[rr][cc] = grdArr[row][col] || 0; 
+                    lifeMap[rr][cc] = grid[rr][cc];
+                    drawCell(rr, cc);                    
                 } else {
                     grid[row][col] = grdArr[row][col] || 0; 
                     lifeMap[row][col] = lmapArr ? lmapArr[row][col] || 0 : 0;
                     drawCell(row, col);                    
                 }
-
             }
         }
     }
+    updateStats();
 }
 
 function chooseScreen() { 
@@ -611,26 +619,39 @@ function moveGrid(dir) {
     let scrRows = grid.length;
     let scrCols = grid[0].length;
 
+    console.log(grid);
     switch(dir) {
         case 'l':
             grid.shift();
-            grid.push(new Array(scrCols). fill(0));
+            grid.push(new Array(scrCols).fill(0));
+            lifeMap.shift();
+            lifeMap.push(new Array(scrCols).fill(0));
             break;
         case 'r':
             grid.pop();
-            grid.unshift(new Array(scrCols). fill(0));   
+            grid.unshift(new Array(scrCols).fill(0));   
+            lifeMap.pop();
+            lifeMap.unshift(new Array(scrCols).fill(0));               
             break;
         case 'u':
             grid.forEach(g => {
                 g.shift();
                 g.push(0);
             });  
+            lifeMap.forEach(g => {
+                g.shift();
+                g.push(0);
+            });              
             break;   
         case 'd':
             grid.forEach(g => {
                 g.pop();
                 g.unshift(0);
-            });               
+            });      
+            lifeMap.forEach(g => {
+                g.pop();
+                g.unshift(0);
+            });           
     }
     drawGrid();
 }
@@ -650,24 +671,17 @@ function shadeColors(color, percent = 0.70) {
 
 function usedPercent() {
     let usedCells = 0;
-/*    let totalRows = lifeMap.length;
-    let totalCols = lifeMap[0].length;
-    let total = totalRows * totalCols;
-
-     for (let row = 0; row < totalRows; row++) { 
-        for (let col = 0; col < totalCols; col++) { 
-            usedCells += lifeMap[row][col] ? 1 : 0;
-        }
-    } */
     let totalRows = lifeMap.length - offset;
     let totalCols = lifeMap[0].length - offset;
-    let total = totalRows * totalCols;
+    let total = (totalRows - offset) * (totalCols - offset);
 
     for (let row = offset; row < totalRows; row++) { 
         for (let col = offset; col < totalCols; col++) { 
-            usedCells += lifeMap[row][col] ? 1 : 0;
+            usedCells += lifeMap[row][col];
         }
     }
+
+    
     return +(usedCells * 100 / total).toFixed(1);
 }
 
@@ -694,15 +708,15 @@ function getItemBounds(arr) {
     return flag ? bounds : null;
 }
 
-function cutItemOut(arr, bounds) {
+function cutItemOut(bounds) { console.log(bounds)
     let newArr = [], ind = 0;
     for (let row = bounds.iniRow; row <= bounds.endRow; row++) { 
-        let newCol = [];
+        let newRow = [];
         for (let col = bounds.iniCol; col <= bounds.endCol; col++) { 
-            newCol.push(arr[row][col]);
+            newRow.push(grid[row][col]);
         }
         //console.log(newCol)
-        newArr[ind] = newCol;
+        newArr[ind] = newRow;
         ind++;
     }
     console.log(newArr)
@@ -710,25 +724,69 @@ function cutItemOut(arr, bounds) {
 }
 
 
-function align(itemArr, pos) {
-    let itemRows = itemArr.length;
-    let itemCols = itemArr[0].length;
+// Aligns whatever is on screen
+function align(pos) { 
+    alignMenu.classList.toggle('show');
+    document.querySelectorAll('.grid > span').forEach(ele => ele.classList.remove('sel'));
+    
+    let setSpot = (ind) => document.querySelector(`.grid > span:nth-child(${ind})`).classList.add('sel');
+    let itemRows = grid.length;
+    let itemCols = grid[0].length;
     let resp = { r: 0, c: 0 };
-    let bounds = getItemBounds(grid);
-    let content = cutItemOut(grid, bounds);
+    let bounds = getItemBounds(grid); console.log(bounds)
+
+    if (!bounds) { return; }
+
+    let content = cutItemOut(bounds); console.log(content)
+    
 
     switch (pos) {
-        case 'center':
+        case 'nw': 
+            setSpot(1);
+            resp.r = resp.c = offset;
+            break;
+        case 'nc':
+            setSpot(2);
+            resp.c = (grid.cols / 2) - (content[0].length / 2);
+            resp.r = offset;
+            break;
+        case 'ne':
+            setSpot(3);
+            resp.r = offset;
+            resp.c = cols - offset - content[0].length;     
+            break;
+        case 'cw':
+            setSpot(4);
+            break;
+        case 'cc':
+            setSpot(5);
             resp.r = Math.round((rows - itemRows) / 2);
             resp.c = Math.round((cols - itemCols) / 2);
             break;
-        case 'topleft':
-            resp.r = resp.c = offset;
+        case 'ce':
+            setSpot(6);
             break;
-        case 'topright':
-            resp.r = offset;
-            resp.c = cols - itemCols - offset;                   
+        case 'bw':
+            setSpot(7);
+            break;
+        case 'bc':
+            setSpot(8);
+            break;
+        case 'be':
+            setSpot(9);
+            break;                        
     }
+
+    blank();
+    console.log(resp)
+
+    for (let row = resp.r; row < resp.r + content.length; row++) {
+        for (let col = resp.c; col < resp.c + content[0].length; col++) {
+            grid[row][col] = content[row][col];
+            lifeMap[row][col] = content[row][col] || 0;
+        }
+    }
+    drawGrid();
 }
 
 
@@ -740,4 +798,10 @@ function closeDialog() {
     infoDlg.close();
 }
 
+function setTab(ind) { console.log(ind)
+    document.querySelector('.tabs > span.sel').classList.remove('sel');
+    document.querySelector(`.tabs > span:nth-child(${ind})`).classList.add('sel');
 
+    document.querySelector('dialog main > section.sel').classList.remove('sel'); 
+    document.querySelector(`dialog main > section.tab${ind}`).classList.add('sel');
+}

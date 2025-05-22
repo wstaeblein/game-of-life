@@ -3,6 +3,7 @@
     "play": "Start",
     "stop": "Stop",
     "clear": "Clear",
+    "reset": "Reset",
     "menu": "Menu",
     "speed": "Speed",
     "size": "Size",
@@ -39,5 +40,14 @@
     "moveleft": "Move everything one column left",
     "moveright": "Move everything one column right",
     "errnameexists": "Name already in the list",
-    "errnoload": "Could not load screen"
+    "errnoload": "Could not load screen",
+    "whatis1": "Conway's Game of Life is a cellular automaton devised by mathematician John Horton Conway in 1970. It is a zero-player game, meaning its evolution is determined by its initial state without further input. The game unfolds on a grid of cells, each of which can be alive or dead. The state of each cell changes in discrete time steps based on simple rules that consider the cell's eight neighbors. For example, a live cell dies from underpopulation (fewer than two live neighbors) or overpopulation (more than three live neighbors), while a dead cell comes to life with exactly three live neighbors. Despite its simplicity, the Game of Life can produce complex, unpredictable patterns, including gliders, oscillators, and even self-replicating structures.",
+    "whatis2": "The Game of Life is significant in computer science, mathematics, and theoretical biology as it demonstrates how complex behaviors can emerge from simple rules. It is Turing complete, meaning it can perform any computation given the right initial configuration. Researchers have used it to explore self-organization, emergence, and the boundaries between order and chaos. The game’s appeal lies in its blend of simplicity and depth, inspiring countless variations and applications in fields like artificial life, complexity theory, and even art. It remains a classic example of how deterministic rules can give rise to seemingly organic, dynamic systems.",
+    "howto1": "To play, you must create cells on the board. To do this, simply click/tap and drag. You can also choose one of the saved screens. The game applies its rules and remakes the board accordingly. This is called generation.",
+    "howto2": "The game ends when there are no changes from one generation to the next. You can interact with the game by creating more cells even while the game is running. To start, click/tap Play <b>(1)</b>.",
+    "howto3": "<b>(2)</b> Resets the grid and <b>(3)</b> clears it. <b>(4)</b> invokes this screen and <b>(5)</b> saves a screen as your own. This screen is saved on the device and can be loaded from the saved screens dropdown.",
+    "howto4": "<b>(6)</b> is the generation counter, <b>(7)</b> are the alignment controls. These controls allow you to move the screen up, down and sideways as well as position whatever is on the screen according to the small 9-position grid in the center. <b>(8)</b> is the percentage of screen use. 100% means that all visible space is or has been occupied by a living cell.",
+    "withlove": "Made with ❤️ by Walter Staeblein",
+    "bmc": "Buy me a coffee",
+    "free": "This web app is 100% free and can be used without restrictions."
 }

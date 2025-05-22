@@ -5,7 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="manifest" href="manifest.json">
-        <link rel="icon" type="image/png" href="./favicon.png">
+        <link rel="icon" type="image/png" href="./imgs/favicon.png">
+        <link rel="favicon" href="/imgs/favicon.png" type="image/png" />
         <meta name="description" content="Conway\'s Game of Life cellular automation simulates life according to 4 simple rules">
 
         <meta name="author" content="Walter Staeblein">
@@ -16,9 +17,6 @@
         <meta name="twitter:card" content="app">
         <meta name="twitter:title" content="Game of Life">
         <meta name="twitter:description" content="Conway's Game of Life cellular automation simulates life according to 4 simple rules">
-        <link rel="icon" href="./favicon.png">
-
-
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +54,7 @@
                     <span class="mainbtns">
                         <button id="startButton" data-trans="play" data-target="aria" data-balloon-pos="up" onclick="startGame(event)"><i class="icon-play2"></i></button>
                         <button id="stopButton" data-trans="stop" data-target="aria" data-balloon-pos="up" onclick="stopGame(event)" style="display: none"><i class="icon-stop"></i></button>
-                        <button id="resetButton" data-trans="clear" data-target="aria" data-balloon-pos="up" onclick="resetGame()"><i class="flip"><i class="icon-spinner11 smaller up2"></i></i></button>
+                        <button id="resetButton" data-trans="reset" data-target="aria" data-balloon-pos="up" onclick="resetGame()"><i class="flip"><i class="icon-spinner11 smaller up2"></i></i></button>
                         <button id="clearButton" data-trans="clear" data-target="aria" data-balloon-pos="up" onclick="clearGame(event)"><i class="icon-loop2 smaller up2"></i></button>
                         <button id="infobtn" data-trans="info" data-target="aria" data-balloon-pos="up" onclick="showInfo(event)"><i class="icon-info"></i></button>
                         <button data-trans="newscreen" data-target="aria" data-balloon-pos="up-right" onclick="saveScreen()"><i class="icon-floppy-disk"></i></button>   
@@ -67,29 +65,41 @@
                     <div class="stats">
                         <div id="movebtns">
                             <span>
-                                <button data-trans="moveup" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'u')" onmouseup="controlMouse(event, 'u', 'u')"><i class="icon-circle-up"></i></button>
+                                <button data-trans="moveup" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onpointerdown="controlMouse(event, 'p', 'u')" onpointerup="controlMouse(event, 'u', 'u')"><i class="icon-circle-up"></i></button>
                             </span>
                             <span>
-                                <button data-trans="movedown" data-target="aria" data-balloon-pos="down-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'd')" onmouseup="controlMouse(event, 'u', 'd')"><i class="icon-circle-down"></i></button>                        
+                                <button data-trans="movedown" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onpointerdown="controlMouse(event, 'p', 'd')" onpointerup="controlMouse(event, 'u', 'd')"><i class="icon-circle-down"></i></button>                        
                             </span>
                             <span>
-                                <button data-trans="moveleft" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'l')" onmouseup="controlMouse(event, 'u', 'l')"><i class="icon-circle-left"></i></button>
+                                <button data-trans="moveleft" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onpointerdown="controlMouse(event, 'p', 'l')" onpointerup="controlMouse(event, 'u', 'l')"><i class="icon-circle-left"></i></button>
                             </span>
                             <span>
-                                <button data-trans="moveright" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onmousedown="controlMouse(event, 'p', 'r')" onmouseup="controlMouse(event, 'u', 'r')"><i class="icon-circle-right"></i></button>                        
+                                <button data-trans="moveright" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onpointerdown="controlMouse(event, 'p', 'r')" onpointerup="controlMouse(event, 'u', 'r')"><i class="icon-circle-right"></i></button>                        
                             </span>
                             <span>
-                                <button data-trans="alignment" data-target="aria" data-balloon-pos="up-left" data-balloon-length="small" onclick="toggleMenu(event)"><i class="icon-screen-full smaller"></i></button>                        
+                                <button data-trans="alignment" data-target="aria" data-balloon-pos="up-left" style="transform: translateY(-6px);" onclick="toggleMenu(event)">
+                                    <span class="grid">
+                                        <span class="sel"></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </span>
+                                </button>                        
                                 <span class="alignmenu">
                                     <span data-trans="align-nw" onclick="align('nw')"></span>
-                                    <span data-trans="align-nc"></span>
-                                    <span data-trans="align-ne"></span>
-                                    <span data-trans="align-cw"></span>
-                                    <span data-trans="align-cc"></span>
-                                    <span data-trans="align-ce"></span>
-                                    <span data-trans="align-bw"></span>
-                                    <span data-trans="align-bc"></span>
-                                    <span data-trans="align-be"></span>                                    
+                                    <span data-trans="align-nc" onclick="align('nc')"></span>
+                                    <span data-trans="align-ne" onclick="align('ne')"></span>
+                                    <span data-trans="align-cw" onclick="align('cw')"></span>
+                                    <span data-trans="align-cc" onclick="align('cc')"></span>
+                                    <span data-trans="align-ce" onclick="align('ce')"></span>
+                                    <span data-trans="align-bw" onclick="align('bw')"></span>
+                                    <span data-trans="align-bc" onclick="align('bc')"></span>
+                                    <span data-trans="align-be" onclick="align('be')"></span>                                    
                                 </span>
                             </span>                            
                             
@@ -110,9 +120,9 @@
                     </div>
 
                     <div class="condition">
-                        <span data-trans="alive" data-target="aria" data-balloon-pos="up-left"><i class="icon-alive"></i>&nbsp;<span id="alive">0</span></span>
-                        <span data-trans="births" data-target="aria" data-balloon-pos="up"><i class="icon-birth"></i>&nbsp;<span id="births">0</span></span>
-                        <span data-trans="deaths" data-target="aria" data-balloon-pos="up-right"><i class="icon-death"></i>&nbsp;<span id="deaths">0</span></span>
+                        <span data-trans="alive" data-target="aria" data-balloon-pos="down-left"><i class="icon-alive"></i>&nbsp;<span id="alive">0</span></span>
+                        <span data-trans="births" data-target="aria" data-balloon-pos="down"><i class="icon-birth"></i>&nbsp;<span id="births">0</span></span>
+                        <span data-trans="deaths" data-target="aria" data-balloon-pos="down-right"><i class="icon-death"></i>&nbsp;<span id="deaths">0</span></span>
                     </div>                    
                 </nav> 
                 
@@ -138,12 +148,12 @@
                 <div class="langs range">
                     <span class="upper" data-trans="language"></span>
                     <div>
-                        <img src="/flags/pt.png" data-lang="pt" onclick="selLanguage('pt', true)" />
-                        <img src="/flags/en.png" data-lang="en" onclick="selLanguage('en', true)" />
-                        <img src="/flags/es.png" data-lang="es" onclick="selLanguage('es', true)" />
-                        <img src="/flags/fr.png" data-lang="fr" onclick="selLanguage('fr', true)" />
-                        <img src="/flags/de.png" data-lang="de" onclick="selLanguage('de', true)" />
-                        <img src="/flags/it.png" data-lang="it" onclick="selLanguage('it', true)" />                        
+                        <span data-balloon-pos="up-left"  aria-label="Português"><img src="/imgs/flags/pt.png" data-lang="pt" onclick="selLanguage('pt', true)" /></span>
+                        <span data-balloon-pos="up-left"  aria-label="English"><img   src="/imgs/flags/en.png" data-lang="en" onclick="selLanguage('en', true)" /></span>
+                        <span data-balloon-pos="up-left"  aria-label="Español"><img   src="/imgs/flags/es.png" data-lang="es" onclick="selLanguage('es', true)" /></span>
+                        <span data-balloon-pos="up-left"  aria-label="Français"><img  src="/imgs/flags/fr.png" data-lang="fr" onclick="selLanguage('fr', true)" /></span>
+                        <span data-balloon-pos="up-left"  aria-label="Deutsch"><img   src="/imgs/flags/de.png" data-lang="de" onclick="selLanguage('de', true)" /></span>
+                        <span data-balloon-pos="up-right" aria-label="Italiano"><img  src="/imgs/flags/it.png" data-lang="it" onclick="selLanguage('it', true)" /></span>                   
                     </div>
                 </div>
 
@@ -186,6 +196,37 @@
                         <span onclick="setTab(3)">Sobre</span>
                     </div>
 
+                    <section class="tab1 sel">
+                        <p data-trans="whatis1"></p>
+                        <p data-trans="whatis2"></p>
+                    </section>
+
+                    <section class="tab2">
+                        <p data-trans="howto1" data-target="html"></p>
+                        <p><img src="/imgs/topdash.png" /></p>
+                        <p data-trans="howto2" data-target="html"></p>
+                        <p data-trans="howto3" data-target="html"></p>
+                        <p data-trans="howto4" data-target="html"></p>
+                    </section>
+
+                    <section class="tab3 center">
+                        <div>
+                            <img src="/imgs/wslogo.png" />
+                            <div data-trans="withlove"></div>
+                            <p data-trans="free"></p>
+                        </div>
+                        <div class="links">
+                            <a href="mailto:walter@synergys.com.br" target="_blank" class="btn"><img src="/imgs/mail.png" /><br>Email</a>
+                            <a href="https://github.com/wstaeblein" target="_blank" class="btn"><img src="/imgs/github.png" /><br>Github</a>
+                            <a href="https://www.linkedin.com/in/wstaeblein/" target="_blank" class="btn"><img src="/imgs/linkedin.png" /><br>Linkedin</a>
+                            <a href="https://facebook.com/wstaeblein" target="_blank" class="btn"><img src="/imgs/facebook.png" /><br>Facebook</a>
+                            
+                        </div>
+                        <br>
+                        <div class="bmc">
+                            <a href="https://buymeacoffee.com/wstaeblein" target="_blank"><img src="/imgs/bmc.png" /><span data-trans="bmc"></span></a>
+                        </div>
+                    </section>
                 </main>                
             </div>
         </dialog>
