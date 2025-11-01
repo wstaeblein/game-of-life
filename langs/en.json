@@ -49,5 +49,11 @@
     "howto4": "<b>(6)</b> is the generation counter, <b>(7)</b> are the alignment controls. These controls allow you to move the screen up, down and sideways as well as position whatever is on the screen according to the small 9-position grid in the center. <b>(8)</b> is the percentage of screen use. 100% means that all visible space is or has been occupied by a living cell.",
     "withlove": "Made with ❤️ by Walter Staeblein",
     "bmc": "Buy me a coffee",
-    "free": "This web app is 100% free and can be used without restrictions."
+    "free": "This web app is 100% free and can be used without restrictions.",
+    "repo": "Source Code",
+    "tabwhat": "What is it",
+    "tabhow": "Help",
+    "tababout": "About",
+    "tabothers": "Others",
+    "othersdesc": "Visit our other sites and discover free services and entertainment"
 }

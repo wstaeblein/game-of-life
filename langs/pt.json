@@ -49,5 +49,11 @@
     "howto4": "<b>(6)</b> é o contador de gerações, <b>(7)</b> são os controles de alinhamento. Estes controles permitem que você mova a tela para cima, baixo e lados além de posicionar o que estiver na tela de acordo com o pequeno grid de 9 posições no centro. <b>(8)</b> é a escala de uso da tela. 100% quer dizer que todos os espaços visíveis estão ou já foram ocupados por uma célula viva.",
     "withlove": "Feito com ❤️ por Walter Staeblein",
     "bmc": "Me paga um café",
-    "free": "Este web app é 100% gratuito e pode ser usado sem restrições."
+    "free": "Este web app é 100% gratuito e pode ser usado sem restrições.",
+    "repo": "Código Fonte",
+    "tabwhat": "O Que é",
+    "tabhow": "Ajuda",
+    "tababout": "Sobre",
+    "tabothers": "Outros",
+    "othersdesc": "Visite nossos outros sites e descubra serviços gratuitos e entretenimento"
 }

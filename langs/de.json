@@ -38,5 +38,22 @@
     "moveleft": "Bewegen Sie alles, was eine Spalte übrig ließ",
     "moveright": "Bewegen Sie alles eine Spalte nach rechts",
     "errnameexists": "Name bereits in der Liste",
-    "errnoload": "Konnte den Bildschirm nicht laden"
+    "errnoload": "Konnte den Bildschirm nicht laden",
+
+    "whatis1": "Conways Spiel des Lebens ist ein zellulärer Automat, der 1970 von dem Mathematiker John Horton Conway entwickelt wurde. Es handelt sich um ein Nullspielerspiel, dessen Entwicklung allein durch den Anfangszustand bestimmt wird. Das Spiel findet auf einem Gitter aus Zellen statt, von denen jede entweder lebendig oder tot sein kann. Der Zustand jeder Zelle ändert sich in diskreten Zeitschritten anhand einfacher Regeln, die die acht Nachbarn der Zelle berücksichtigen. Beispielsweise stirbt eine lebendige Zelle bei Unterbevölkerung (weniger als zwei lebendige Nachbarn) oder Überbevölkerung (mehr als drei lebendige Nachbarn), während eine tote Zelle mit genau drei lebendigen Nachbarn wieder zum Leben erwacht. Trotz seiner Einfachheit kann das Spiel des Lebens komplexe, unvorhersehbare Muster erzeugen, darunter Gleiter, Oszillatoren und sogar sich selbst replizierende Strukturen.",
+    "whatis2": "Das Spiel des Lebens ist in der Informatik, Mathematik und theoretischen Biologie von großer Bedeutung, da es veranschaulicht, wie komplexe Verhaltensweisen aus einfachen Regeln entstehen können. Es ist Turing-vollständig, das heißt, es kann bei der richtigen Anfangskonfiguration jede beliebige Berechnung durchführen. Forscher haben es genutzt, um Selbstorganisation, Emergenz und die Grenzen zwischen Ordnung und Chaos zu untersuchen. Der Reiz des Spiels liegt in seiner Verbindung von Einfachheit und Tiefe, die unzählige Variationen und Anwendungen in Bereichen wie künstlichem Leben, Komplexitätstheorie und sogar Kunst inspiriert hat. Es bleibt ein klassisches Beispiel dafür, wie deterministische Regeln scheinbar organische, dynamische Systeme hervorbringen können.",
+    "howto1": "Zum Spielen müssen Sie Felder auf dem Spielbrett erstellen. Klicken/Tippen Sie dazu einfach und ziehen Sie die Felder. Sie können auch einen der gespeicherten Bildschirme auswählen. Das Spiel wendet dann seine Regeln an und erstellt das Spielbrett entsprechend neu. Diesen Vorgang nennt man Generierung.",
+    "howto2": "Das Spiel endet, wenn sich von einer Generation zur nächsten nichts mehr ändert. Du kannst auch während des Spiels weitere Zellen erstellen und so mit dem Spiel interagieren. Zum Starten klicke/tippe auf „Spielen“ (1).",
+    "howto3": "(2) setzt das Raster zurück und (3) löscht es. (4) ruft diesen Bildschirm auf und (5) speichert einen Bildschirm als Ihren eigenen. Dieser Bildschirm wird auf dem Gerät gespeichert und kann über das Dropdown-Menü „Gespeicherte Bildschirme“ geladen werden.",
+    "howto4": "(6) ist der Generationszähler, (7) sind die Ausrichtungssteuerungen. Mit diesen Steuerelementen können Sie den Bildschirm nach oben, unten und zur Seite verschieben sowie die Inhalte anhand des kleinen 9-Positionen-Rasters in der Mitte positionieren. (8) zeigt die prozentuale Bildschirmauslastung an. 100 % bedeutet, dass der gesamte sichtbare Bereich von einer lebenden Zelle belegt ist oder war.",
+
+    "withlove": "Hergestellt mit ❤️ von Walter Staeblein",
+    "bmc": "Kauf mir einen Kaffee",
+    "free": "Diese Web-App ist 100 % kostenlos und kann ohne Einschränkungen genutzt werden.",
+    "repo": "Quellcode",
+    "tabwhat": "Was ist das",
+    "tabhow": "Helfen",
+    "tababout": "Um",
+    "tabothers": "Andere",
+    "othersdesc": "Besuchen Sie unsere anderen Websites und entdecken Sie kostenlose Dienste und Unterhaltung"
 }

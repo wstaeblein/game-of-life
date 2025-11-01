@@ -22,11 +22,13 @@ let oldCell = '';
 let root = document.querySelector(':root');
 let offset = 30;
 let alignMenu = null;
+let appData = null;
 
 
 // Page Load
 window.addEventListener('load', async function(event) {
 
+    await loadData();
     await selLanguage(language);
     selColor(colorIndex);
 
@@ -56,13 +58,14 @@ window.addEventListener('load', async function(event) {
 
     //infoDlg.showModal();
     canvas.addEventListener('mousemove',   function(e) { e.preventDefault(); mouseEvents(e); }, false);
-    canvas.addEventListener('touchmove',   function(e) { e.preventDefault(); mouseEvents(e); }, false);
+    canvas.addEventListener('touchmove',   function(e) { e.preventDefault(); mouseEvents(e); }, true);
     canvas.addEventListener('click',       function(e) { e.preventDefault(); mouseEvents(e, true); }, false);
     canvas.addEventListener('contextmenu', function(e) { e.preventDefault(); mouseEvents(e, true); return false; } ); 
 
     initGrid();
-
     getAllScreens();
+    showLinks();
+    showOtherApps(language);
 
     setInterval(() => {
         if (running) {
@@ -89,6 +92,15 @@ function handleKeyboard(e) {
     }
 }
 
+function toggleMainBar(open) {
+    if (open) {
+        document.querySelector('aside').style.left = '0px';
+    } else {
+        document.querySelector('aside').style.left = '-210px';
+    }
+    
+}
+
 function toggleMenu(e) { 
     if (e) {
         e.preventDefault();
@@ -111,6 +123,44 @@ async function selLanguage(lang, save) {
     if (save) {
         localStorage.setItem('lang', lang)
     }
+    showOtherApps(lang);
+}
+
+async function loadData() {
+    let resp = await fetch('https://wstaeblein.github.io/myapps/json/data.json');
+    if (resp.ok) {
+        appData = await resp.json();
+    } 
+}
+
+function showLinks() {
+    let lnkEele = document.querySelector('.links');
+    let html = `
+        <a href="${appData.contacts.email}" target="_blank" class="btn"><img src="/imgs/mail.png" /><br>Email</a>
+        <a href="${appData.contacts.coderepo}" target="_blank" class="btn"><img src="/imgs/github.png" /><br>Github</a>
+        <a href="${appData.contacts.linkedin}" target="_blank" class="btn"><img src="/imgs/linkedin.png" /><br>Linkedin</a>
+        <a href="${appData.contacts.fb}" target="_blank" class="btn"><img src="/imgs/facebook.png" /><br>Facebook</a>    
+    `;
+    lnkEele.innerHTML = html;
+}
+
+function showOtherApps(lng) {
+    if (!appData) { return; }
+    let appsEele = document.querySelector('.others');
+    let html = '<ul>$$$</ul>';
+    let ctt = '';
+
+    appData[lng].forEach(app => {
+        ctt += `
+        <li>
+            <a href="${app.link}" target="_blank">
+                <div><img src="${appData.imgs[app.id]}" alt="${app.name}" /></div>
+                <h5>${app.name}</h5>    
+                <p>${app.desc}</p>        
+            </a>
+        </li>`;
+    });
+    appsEele.innerHTML = html.replace('$$$', ctt);
 }
 
 function selColor(index) {
@@ -124,7 +174,7 @@ function selColor(index) {
     let newLink = document.createElement('link');
     newLink.rel = 'icon';
     newLink.type = 'image/png';
-    newLink.href = `./favicon-${index}.png`;
+    newLink.href = `/imgs/favicon-${index}.png`;
     document.head.removeChild(oldLink);
     document.head.appendChild(newLink);
 
@@ -238,7 +288,7 @@ function mouseEvents(e, isClick) {
     if (e.buttons === 1 || (isClick && e.button === 0) || hasTouch) {
         if (hasTouch) {
             let cell = grid[row][col];
-            grid[row][col] = cell ? 0 : 1;
+            grid[row][col] = 1 //cell ? 0 : 1;
             lifeMap[row][col] = 1;
             drawCell(row, col, !!cell);
         } else {
@@ -246,24 +296,18 @@ function mouseEvents(e, isClick) {
             lifeMap[row][col] = 1;
             drawCell(row, col, true);
         }
-
-
     } else if (e.buttons == 2 || (isClick && e.button === 2)) {
         grid[row][col] = 0;
         drawCell(row, col, false);
     }
 
-
-
     //if (isClick || (e.targetTouches && e.targetTouches.length)) { menu.classList.remove('open'); }
 }            
 
 function gamePlay() {
-    //console.time('gen')
     generation();
     drawGrid();
     if (running) { setTimeout(gamePlay, interval); }
-    //console.timeEnd('gen')
 }
 
 // Inicia o jogo
@@ -298,7 +342,7 @@ async function resetGame() {
     if (snapShot.length) { 
         if (running) { 
             stopGame(); 
-            await new Promise(r => setTimeout(r, interval));
+            await new Promise(resolve => setTimeout(resolve, interval));
         }
         blank(); 
         grid = clone(snapShot);

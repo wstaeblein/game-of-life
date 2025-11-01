@@ -9,32 +9,32 @@
     "categories": ["education", "technology", "automata", "experience", "games"],
     "icons": [
         {
-          "src": "icons/icon48.png",
+          "src": "imgs/icons/icon48.png",
           "sizes": "48x48",
           "type": "image/png"
         },
         {
-          "src": "icons/icon72.png",
+          "src": "imgs/icons/icon72.png",
           "sizes": "72x72",
           "type": "image/png"
         },
         {
-          "src": "icons/icon96.png",
+          "src": "imgs/icons/icon96.png",
           "sizes": "96x96",
           "type": "image/png"
         },
         {
-          "src": "icons/icon144.png",
+          "src": "imgs/icons/icon144.png",
           "sizes": "144x144",
           "type": "image/png"
         },
         {
-          "src": "icons/icon168.png",
+          "src": "imgs/icons/icon168.png",
           "sizes": "168x168",
           "type": "image/png"
         },
         {
-          "src": "icons/icon192.png",
+          "src": "imgs/icons/icon192.png",
           "sizes": "192x192",
           "type": "image/png"
         }

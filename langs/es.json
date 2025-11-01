@@ -38,5 +38,21 @@
     "moveleft": "Mueve todo lo que queda una columna",
     "moveright": "Mueve todo una columna correcta",
     "errnameexists": "Nombre ya en la lista",
-    "errnoload": "No pudo cargar la pantalla"
+    "errnoload": "No pudo cargar la pantalla",
+
+    "whatis1": "El Juego de la Vida de Conway es un autómata celular ideado por el matemático John Horton Conway en 1970. Es un juego de cero jugadores, lo que significa que su evolución está determinada por su estado inicial sin ninguna otra entrada. El juego se desarrolla en una cuadrícula de celdas, cada una de las cuales puede estar viva o muerta. El estado de cada celda cambia en pasos de tiempo discretos basados ​​en reglas simples que consideran a los ocho vecinos de la celda. Por ejemplo, una célula viva muere por subpoblación (menos de dos vecinos vivos) o superpoblación (más de tres vecinos vivos), mientras que una célula muerta cobra vida con exactamente tres vecinos vivos. A pesar de su simplicidad, el Juego de la Vida puede producir patrones complejos e impredecibles, incluyendo planeadores, osciladores e incluso estructuras autorreplicantes.",
+    "whatis2": "El Juego de la Vida es fundamental en informática, matemáticas y biología teórica, ya que demuestra cómo pueden surgir comportamientos complejos a partir de reglas simples. Es Turing completo, lo que significa que puede realizar cualquier cálculo con la configuración inicial adecuada. Los investigadores lo han utilizado para explorar la autoorganización, la emergencia y los límites entre el orden y el caos. Su atractivo reside en su combinación de simplicidad y profundidad, inspirando innumerables variaciones y aplicaciones en campos como la vida artificial, la teoría de la complejidad e incluso el arte. Sigue siendo un ejemplo clásico de cómo las reglas deterministas pueden dar lugar a sistemas aparentemente orgánicos y dinámicos.",
+    "howto1": "Para jugar, debes crear celdas en el tablero. Para ello, simplemente haz clic/toca y arrastra. También puedes elegir una de las pantallas guardadas. El juego aplica sus reglas y reconstruye el tablero según corresponda. Esto se llama generación.",
+    "howto2": "El juego termina cuando no hay cambios entre generaciones. Puedes interactuar con el juego creando más celdas incluso mientras se está ejecutando. Para empezar, haz clic/pulsa Jugar <b>(1)</b>.",
+    "howto3": "<b>(2)</b> Restablece la cuadrícula y <b>(3)</b> la borra. <b>(4)</b> Invoca esta pantalla y <b>(5)</b> guarda una pantalla como propia. Esta pantalla se guarda en el dispositivo y se puede cargar desde el menú desplegable de pantallas guardadas.",
+    "howto4": "<b>(6)</b> es el contador de generación, <b>(7)</b> son los controles de alineación. Estos controles permiten mover la pantalla hacia arriba, hacia abajo y hacia los lados, así como posicionar lo que esté en ella según la pequeña cuadrícula de 9 posiciones en el centro. <b>(8)</b> es el porcentaje de uso de la pantalla. 100% significa que todo el espacio visible está o ha estado ocupado por una célula viva.",
+    "withlove": "Hecho con ❤️ por Walter Staeblein",
+    "bmc": "Cómprame un café",
+    "free": "Esta aplicación web es 100% gratuita y se puede utilizar sin restricciones.",
+    "repo": "Código fuente",
+    "tabwhat": "Qué es",
+    "tabhow": "Ayuda",
+    "tababout": "Sobre",
+    "tabothers": "Otros",
+    "othersdesc": "Visita nuestros otros sitios y descubre servicios y entretenimiento gratuitos"
 }

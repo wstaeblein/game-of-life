@@ -38,5 +38,20 @@
     "moveleft": "Déplacez tout une colonne à gauche",
     "moveright": "Déplacez tout une colonne à droite",
     "errnameexists": "Nom déjà dans la liste",
-    "errnoload": "Impossible de charger l'écran"
+    "errnoload": "Impossible de charger l'écran",
+    "whatis1": "Le Jeu de la Vie de Conway est un automate cellulaire conçu par le mathématicien John Horton Conway en 1970. C'est un jeu sans joueur, ce qui signifie que son évolution est déterminée par son état initial, sans intervention extérieure. Le jeu se déroule sur une grille de cellules, chacune pouvant être vivante ou morte. L'état de chaque cellule change à intervalles de temps discrets, selon des règles simples qui prennent en compte ses huit voisines. Par exemple, une cellule vivante meurt en cas de sous-population (moins de deux voisines vivantes) ou de surpopulation (plus de trois voisines vivantes), tandis qu'une cellule morte revient à la vie lorsqu'elle a exactement trois voisines vivantes. Malgré sa simplicité, le Jeu de la Vie peut générer des motifs complexes et imprévisibles, tels que des planeurs, des oscillateurs, et même des structures autoréplicatives.",
+    "whatis2": "Le Jeu de la Vie est fondamental en informatique, en mathématiques et en biologie théorique, car il illustre comment des comportements complexes peuvent émerger de règles simples. Il est Turing-complet, c'est-à-dire qu'il peut effectuer n'importe quel calcul avec la configuration initiale adéquate. Les chercheurs l'ont utilisé pour explorer l'auto-organisation, l'émergence et les frontières entre ordre et chaos. L'attrait du jeu réside dans son mélange de simplicité et de profondeur, inspirant d'innombrables variations et applications dans des domaines tels que la vie artificielle, la théorie de la complexité et même l'art. Il demeure un exemple classique de la façon dont des règles déterministes peuvent donner naissance à des systèmes dynamiques d'apparence organique.",
+    "howto1": "Pour jouer, vous devez créer des cases sur le plateau. Pour ce faire, cliquez/appuyez et faites glisser. Vous pouvez également choisir un écran enregistré. Le jeu applique ses règles et recrée le plateau en conséquence. C'est ce qu'on appelle la génération.",
+    "howto2": "La partie se termine lorsqu'il n'y a plus de changements d'une génération à l'autre. Vous pouvez interagir avec le jeu en créant de nouvelles cellules, même pendant son déroulement. Pour commencer, cliquez/appuyez sur Jouer <b>(1)</b>.",
+    "howto3": "(2) Réinitialise la grille et (3) l'efface. (4) Affiche cet écran et (5) enregistre un écran personnalisé. Cet écran est enregistré sur l'appareil et peut être chargé depuis le menu déroulant des écrans enregistrés.",
+    "howto4": "<b>(6)</b> est le compteur de générations, <b>(7)</b> sont les commandes d'alignement. Ces commandes permettent de déplacer l'écran verticalement et horizontalement, ainsi que de positionner son contenu sur la petite grille centrale à 9 positions. <b>(8)</b> est le pourcentage d'utilisation de l'écran. 100 % signifie que tout l'espace visible est ou a été occupé par une cellule vivante.",
+    "withlove": "Réalisé avec ❤️ par Walter Staeblein",
+    "bmc": "Achetez-moi un café",
+    "free": "Cette application web est 100 % gratuite et peut être utilisée sans restrictions.",
+    "repo": "Code source",
+    "tabwhat": "Quoi",
+    "tabhow": "Aide",
+    "tababout": "À propos",
+    "tabothers": "Autres",
+    "othersdesc": "Visitez nos autres sites et découvrez des services et divertissements gratuits"
 }

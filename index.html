@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="manifest" href="manifest.json">
         <link rel="icon" type="image/png" href="./imgs/favicon.png">
-        <link rel="favicon" href="/imgs/favicon.png" type="image/png" />
+<!--         <link rel="favicon" href="/imgs/favicon.png" type="image/png" /> -->
         <meta name="description" content="Conway\'s Game of Life cellular automation simulates life according to 4 simple rules">
 
         <meta name="author" content="Walter Staeblein">
@@ -36,8 +36,9 @@
     </head>
     <body>
         <div id="game">
-
+            <div class="togglebar" onclick="toggleMainBar(true)"></div>
             <aside>
+                <span class="closemainbar" onclick="toggleMainBar()">&#10006;</span>
                 <nav onclick="closeMenu(event)">
                     <span class="title">
                         <span class="logo">
@@ -137,7 +138,7 @@
 
                 <span class="range">
                     <span class="upper" data-trans="speed"></span>
-                    <input type="range" data-trans="speedanim" data-target="aria" data-balloon-pos="up-right" id="interval" min="0" max="400" step="10" value="120" oninput="modifyInterval()">
+                    <input type="range" data-trans="speedanim" data-target="aria" data-balloon-pos="up-right" id="interval" min="10" max="400" step="10" value="120" oninput="modifyInterval()">
                 </span>
 
                 <span class="range">
@@ -191,9 +192,10 @@
                 </span>
                 <main>
                     <div class="tabs">
-                        <span class="sel" onclick="setTab(1)">O Que é</span>
-                        <span onclick="setTab(2)">Como Usar</span>
-                        <span onclick="setTab(3)">Sobre</span>
+                        <span class="sel" onclick="setTab(1)" data-trans="tabwhat"></span>
+                        <span onclick="setTab(2)" data-trans="tabhow"></span>
+                        <span onclick="setTab(3)" data-trans="tababout"></span>
+                        <span onclick="setTab(4)" data-trans="tabothers"></span>
                     </div>
 
                     <section class="tab1 sel">
@@ -211,7 +213,8 @@
 
                     <section class="tab3 center">
                         <div>
-                            <img src="/imgs/wslogo.png" />
+                            <br>
+                            <img src="https://wstaeblein.github.io/myapps/img/logo-ws-256.webp" width="128" />
                             <div data-trans="withlove"></div>
                             <p data-trans="free"></p>
                         </div>
@@ -226,6 +229,23 @@
                         <div class="bmc">
                             <a href="https://buymeacoffee.com/wstaeblein" target="_blank"><img src="/imgs/bmc.png" /><span data-trans="bmc"></span></a>
                         </div>
+                        <br>
+                        <div>
+                            <img src="/imgs/bmc_qr.png" style="width: 234px;" />
+                        </div>
+                        <br>
+                        <div>
+                            <a href="https://github.com/wstaeblein/game-of-life" target="_blank" data-trans="repo"></a>
+                        </div>
+                        <br>
+                    </section>
+
+                    <section class="tab4">
+                        <div data-trans="othersdesc" class="othersdesc"></div>
+                        <div class="others">
+
+                        </div>
+
                     </section>
                 </main>                
             </div>
